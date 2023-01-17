@@ -4,8 +4,11 @@ import shareVideo from "../assets/share.mp4";
 import logo from "../assets/logowhite.png";
 import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
+import { client } from "../client.js";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   function handleCallbackResponse(response) {
     console.log(response);
   }
@@ -46,6 +49,17 @@ const Login = () => {
                 const token = credentialResponse.credential;
                 const decoded = jwt_decode(token);
                 console.log(decoded);
+
+                const doc = {
+                  _id: credentialResponse.clientId,
+                  _type: "user",
+                  username: decoded.name,
+                  image: decoded.picture,
+                };
+
+                client.createIfNotExists(doc).then(() => {
+                  navigate("/", { replace: true });
+                });
               }}
               onError={() => {
                 console.log("Login Failed");
