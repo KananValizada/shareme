@@ -45,17 +45,17 @@ const Login = () => {
           <div className="shadow-2xl">
             <GoogleLogin
               onSuccess={(credentialResponse) => {
-                localStorage.setItem("user", JSON.stringify());
                 const token = credentialResponse.credential;
                 const decoded = jwt_decode(token);
-                console.log(decoded);
+                localStorage.setItem("user", JSON.stringify(decoded));
 
                 const doc = {
                   _id: credentialResponse.clientId,
                   _type: "user",
-                  username: decoded.name,
+                  userName: decoded.name,
                   image: decoded.picture,
                 };
+                console.log(doc);
 
                 client.createIfNotExists(doc).then(() => {
                   navigate("/", { replace: true });
